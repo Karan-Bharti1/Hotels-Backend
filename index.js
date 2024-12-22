@@ -140,6 +140,27 @@ app.post("/hotels",async(req,res)=>{
        res.status(500).json({error:"Failed to add data"}) 
     }
 })
+async function deleteHotelData(hotelId){
+    try {
+       const deletedHotel=await Hotel.findByIdAndDelete(hotelId) 
+       return deletedHotel
+    } catch (error) {
+        throw error
+    }
+}
+app.delete("/hotels/:hotelId",async(req,res)=>{
+    const deletedHotel=await deleteHotelData(req.params.hotelId)
+    try {
+        if(deletedHotel){
+            res.status(201).json({message:"Hotel Deleted Successfully"})
+        }else{
+            res.status(404).json({message:"Data Not Found"})
+        }
+        
+    } catch (error) {
+        res.status(500).json({error:"Failed to fetch the data"})
+    }
+})
 app.listen(PORT,()=>{
     console.log("Server is running on port",PORT)
 })
