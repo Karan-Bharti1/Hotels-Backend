@@ -34,6 +34,92 @@ app.get("/hotels",async(req,res)=>{
         res.status(500).json({error:"Failed to fetch the data"})
     }
 })
+
+const readHotelByName=async(hotelName)=>{
+    try{
+const hotel=await Hotel.findOne({name:hotelName})
+return hotel
+    }catch (error){
+        throw error
+    }
+}
+app.get("/hotels/:hotelName",async(req,res)=>{
+    const hotel=await readHotelByName(req.params.hotelName)
+  try {
+    if(hotel){
+res.status(201).json(hotel)
+    }else{
+res.status(404).json({error:"Hotel Not Found"})
+    }
+    
+  } catch (error) {
+    res.status(500).json({error:"Failed to fetch the data"})
+  }
+})
+const readHotelByPhoneNumber=async(phNumber)=>{
+
+    try {
+        const hotel=await Hotel.findOne({phoneNumber:phNumber})
+        console.log(hotel)
+        return hotel     
+    } catch (error) {
+        throw error
+    }
+}
+app.get("/hotels/directory/:hotelName",async(req,res)=>{
+    const hotel=await readHotelByPhoneNumber(req.params.hotelName)
+    try {
+        if(hotel){
+    res.status(201).json(hotel)
+        }else{
+    res.status(404).json({error:"Hotel Not Found"})
+        }
+        
+      } catch (error) {
+        res.status(500).json({error:"Failed to fetch the data"})
+      }
+})
+const readHotelByRating=async(hotelRating)=>{
+    try {
+       const hotels=await Hotel.find({rating:hotelRating})
+       console.log(hotels)
+       return hotels
+    } catch (error) {
+       throw error 
+    }
+}
+app.get("/hotels/rating/:hotelRating",async(req,res)=>{
+const hotels=await readHotelByRating(parseFloat(req.params.hotelRating))
+try {
+   if(hotels.length!=0){
+    res.status(201).json(hotels)
+   } else{
+    res.status(404).json({error:"Hotels not found"})
+   }
+} catch (error) {
+    res.status(500).json({error:"Failed to fetch the data"}) 
+}
+})
+async function readHotelsByCategory(categoryName) {
+try {
+    const hotels=await Hotel.find({category:categoryName})
+    return hotels
+} catch (error) {
+    throw error
+}
+}
+app.get("/hotels/category/:hotelCategory",async(req,res)=>{
+    const hotels=await readHotelsByCategory(req.params.hotelCategory)
+    try {
+        if(hotels.length!=0){
+         res.status(201).json(hotels)
+        } else{
+         res.status(404).json({error:"Hotels not found"})
+        }
+     } catch (error) {
+         res.status(500).json({error:"Failed to fetch the data"}) 
+     }
+})
 app.listen(PORT,()=>{
     console.log("Server is running on port",PORT)
 })
