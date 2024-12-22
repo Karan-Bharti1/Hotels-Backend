@@ -66,8 +66,8 @@ const readHotelByPhoneNumber=async(phNumber)=>{
         throw error
     }
 }
-app.get("/hotels/directory/:hotelName",async(req,res)=>{
-    const hotel=await readHotelByPhoneNumber(req.params.hotelName)
+app.get("/hotels/directory/:phNumber",async(req,res)=>{
+    const hotel=await readHotelByPhoneNumber(req.params.phNumber)
     try {
         if(hotel){
     res.status(201).json(hotel)
@@ -119,6 +119,26 @@ app.get("/hotels/category/:hotelCategory",async(req,res)=>{
      } catch (error) {
          res.status(500).json({error:"Failed to fetch the data"}) 
      }
+})
+
+async function createHotel(newHotel){
+    try{
+const hotel=new Hotel(newHotel)
+const saveHotel=await hotel.save()
+
+return saveHotel
+    }catch(error){
+      throw error
+    }
+}
+
+app.post("/hotels",async(req,res)=>{
+    try {
+        const savedData=await createHotel(req.body)
+        res.status(201).json({message:"Data added successfully.",savedData})
+    } catch (error) {
+       res.status(500).json({error:"Failed to add data"}) 
+    }
 })
 app.listen(PORT,()=>{
     console.log("Server is running on port",PORT)
