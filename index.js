@@ -161,6 +161,27 @@ app.delete("/hotels/:hotelId",async(req,res)=>{
         res.status(500).json({error:"Failed to fetch the data"})
     }
 })
+const updateHotel=async(hotelId,dataToBeupdated)=>{
+    try {
+      const updatedData=await Hotel.findByIdAndUpdate(hotelId,dataToBeupdated,{new:true})
+   
+      return updatedData  
+    } catch (error) {
+        throw error
+    }
+}
+app.post("/hotels/:hotelId",async(req,res)=>{
+    try {
+      const updatedData=await updateHotel(req.params.hotelId,req.body) 
+      if(updatedData) {
+res.status(200).json({message:"Hotel updated successfully"})
+      }else{
+        res.status(404).json({error:" Hotel data not found"})
+      }
+    } catch (error) {
+        res.status(500).json({error:"Failed to update data"})
+    }
+})
 app.listen(PORT,()=>{
     console.log("Server is running on port",PORT)
 })
